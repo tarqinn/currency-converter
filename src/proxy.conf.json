@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "target": "https://cdn.moneyconvert.net",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {"^/api" : "/api"}
+  }
+}

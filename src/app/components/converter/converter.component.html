@@ -1,0 +1,94 @@
+ <mat-card class="m-4 p-4" *ngIf="currencyService.listOfCurrencyCodes.length">
+   <h1>Currency Converter <span class="invert">💱</span></h1>
+   <form class="flex justify-center">
+     <mat-form-field class="mx-4 w-full">
+       <mat-label>From value</mat-label>
+       <input
+         [formControl]="amountInputControl1"
+         type="text"
+         maxlength="19"
+         matInput
+         placeholder="Ex. 12.34"
+         (input)="convertCurrency1()"
+       />
+       <mat-error *ngIf="amountInputControl1.hasError('pattern')">
+         Enter a valid number
+       </mat-error>
+     </mat-form-field >
+     <mat-form-field class="mx-4 w-full">
+       <mat-label>From currency</mat-label>
+       <input type="text"
+              placeholder="Pick one"
+              aria-label="From currency"
+              matInput
+              [formControl]="currencyInputControl1"
+              [matAutocomplete]="auto1"
+              (input)="amountInputControl1.value ? convertCurrency1() : convertCurrency2()"
+       >
+       <mat-error *ngIf="currencyInputControl1.hasError('currencyInputFromList')">
+         Enter a valid currency code that is presented in the list
+       </mat-error>
+       <mat-autocomplete
+         [displayWith]="displayFn"
+         #auto1="matAutocomplete"
+         (optionSelected)="amountInputControl1.value ? convertCurrency1() : convertCurrency2()"
+       >
+         <mat-optgroup *ngFor="let group of filteredCurrencies1 | async" [label]="group.name">
+           <mat-option *ngFor="let currency of group.values" [value]="currency">
+             {{currency}}
+           </mat-option>
+         </mat-optgroup>
+       </mat-autocomplete>
+     </mat-form-field>
+   </form>
+   <div class="flex">
+     <mat-form-field class="mx-4 w-full">
+       <mat-label>To value</mat-label>
+       <input
+         [formControl]="amountInputControl2"
+         type="text"
+         maxlength="19"
+         matInput
+         placeholder="Ex. 12.34"
+         (input)="convertCurrency2()"
+       />
+       <mat-error *ngIf="amountInputControl2.hasError('pattern')">
+         Value is not valid
+       </mat-error>
+     </mat-form-field>
+     <mat-form-field class="mx-4 w-full">
+       <mat-label>To currency</mat-label>
+       <input
+         type="text"
+         placeholder="Pick one"
+         aria-label="To currency"
+         matInput
+         [formControl]="currencyInputControl2"
+         [matAutocomplete]="auto2"
+         (input)="amountInputControl2.value ? convertCurrency2() : convertCurrency1()"
+       >
+       <mat-error *ngIf="currencyInputControl2.hasError('currencyInputFromList')">
+         Enter a valid currency code that is presented in the list
+       </mat-error>
+       <mat-autocomplete
+         [displayWith]="displayFn"
+         #auto2="matAutocomplete"
+         (optionSelected)="amountInputControl2.value ? convertCurrency2() : convertCurrency1()"
+       >
+         <mat-optgroup *ngFor="let group of filteredCurrencies2 | async" [label]="group.name">
+           <mat-option *ngFor="let currency of group.values" [value]="currency">
+             {{currency}}
+           </mat-option>
+         </mat-optgroup>
+       </mat-autocomplete>
+     </mat-form-field>
+   </div>
+</mat-card>
+ <div class="m-auto top-0 left-0 right-0 bottom-0 fixed h-max">
+   <mat-progress-spinner
+     *ngIf="!currencyService.listOfCurrencyCodes.length"
+     class="m-auto top-0 left-0 right-0 bottom-0 fixed"
+     [color]="'accent'"
+     [mode]="'indeterminate'"
+   ></mat-progress-spinner>
+ </div>
